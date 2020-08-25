@@ -1,11 +1,20 @@
-#This code was written entirely by me, Boyd Kirkman - 11/7/2020
+#This code was written entirely by me, Boyd Kirkman - STARTED: 11/7/2020 FIRST-FINISH: It ain't
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#IMPORTS
 
 import numpy as np
 import csv
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#MATH FUNCTIONS
+
 #the normalising sigmoid function
 def SigmoidFreud(x):
     return 1/(1+np.exp(-x))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#VARIABLE ASSIGNING
 
 #setting seed for predictable "random" generation
 np.random.seed(69)
@@ -27,6 +36,9 @@ _bias2Change = np.array([])
 #defining the number of cycles the neural net will train for, as well as the learning rate
 _trainingCycles = 1
 _learningRate = 1
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#TRAINING THE NUERAL NETWORK
 
 #making a class that will make neuron creation, calculation and organisation easier.
 class neuron():
@@ -53,7 +65,9 @@ def train():
         _output = SigmoidFreud(np.sum(np.multiply(_weights2,_hiddenLayer1))+_bias2) #calculation of the output neuron and normalising to produce a number between 0 and 1
         print(f"output: {_output}")
 
-#Beginning of backpropigation processes
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#BACKPROPIGATION OF THE AI --- NOTE This is still inside the train() function
+
 #1> Calculating the required weight and bias changes
         _memoization = -_learningRate*(_output*(1-_output))*2(_output-_correctAnswer[cycles]) #reduces the number of times the computer calculates this value
         for neuron in range(4):
@@ -112,6 +126,9 @@ def train():
         #second bias
         _bias1 = _bias1+np.average(_bias2Change)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#DATA COLLECTION AND FILE MANIPULATION
+
 #reading the csv file for the training data sets and answers, assigning them their respective numpy arrays
 def Input_collect():
     _tempStore = []
@@ -134,6 +151,35 @@ def Save_state():
     f.write(_bias2)
     f.close()
 
+def Using_Saved():
+    #Do something here to assign the saved weights from the file
+    sf = open("Save_state.csv","r")
+    _weights1 = sf.readline()
+    _bias1 = sf.readline()
+    _weights2 = sf.readline()
+    _bias2 = sf.readline()
+    sf.close()
+    #also do something to take in inputs
+    inf = open("i_data.csv","r")
+    _inputes = inf.readline()
+    inf.close()
+
+    neuron1 = neuron(_weights1[0],_inputs[cycles],_bias1[0])
+    neuron2 = neuron(_weights1[1],_inputs[cycles],_bias1[1])
+    neuron3 = neuron(_weights1[2],_inputs[cycles],_bias1[2])
+    neuron4 = neuron(_weights1[3],_inputs[cycles],_bias1[3])
+    _hiddenLayer1 = np.array([neuron1.calcSelf(),neuron2.calcSelf(),neuron3.calcSelf(),neuron4.calcSelf()])
+    _output = SigmoidFreud(np.sum(np.multiply(_weights2,_hiddenLayer1))+_bias2) #calculation of the output neuron and normalising to produce a number between 0 and 1
+    if _output >= 5:
+        print("It will rain in the afternoon :(\nWell I'm at least "+str(_output*100)+"%% sure...")
+        quit()
+    else:
+        print("It won't rain :)\nWell I'm at least "+str(100-_output*100)+"%% sure...")
+        quit()
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#INITIALISING THE PROGRAM
+
 def main():
     choice = input("\n \n \n \ntype '1' to train or type '2' to use already trained:")
     if choice == "1":
@@ -142,7 +188,6 @@ def main():
         Save_state()
     if choice == "2":
         pass
-
 
 if __name__ == "__main__":
     main()
