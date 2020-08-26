@@ -1,4 +1,4 @@
-#This code was written entirely by me, Boyd Kirkman - STARTED: 11/7/2020 FIRST-FINISH: It ain't
+#This code was written entirely by me, Boyd Kirkman - STARTED: 11/7/2020
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #IMPORTS
@@ -150,7 +150,7 @@ def Save_state():
     np.savetxt('b2.csv', _bias2, delimiter=',')
 
 def Using_saved():
-    #Do something here to assign the saved weights from the file
+    #Assign the saved weights and biases from their respective files
     _weights1 = np.loadtxt('w1.csv', delimiter=',')
     _bias1 = np.loadtxt('b1.csv', delimiter=',')
     _weights2 = np.loadtxt('w2.csv', delimiter=',')
