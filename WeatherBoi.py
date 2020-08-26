@@ -38,7 +38,7 @@ _trainingCycles = 1
 _learningRate = 1
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#TRAINING THE NUERAL NETWORK
+#CONSTRUCTING THE NUERAL NETWORK
 
 #making a class that will make neuron creation, calculation and organisation easier.
 class neuron():
@@ -144,37 +144,31 @@ def Input_collect():
 
 #saving the state of the trained neural net weights and biases
 def Save_state():
-    f = open("Save_state.csv","w+")
-    f.write(_weights1)
-    f.write(_bias1)
-    f.write(_weights2)
-    f.write(_bias2)
-    f.close()
+    np.savetxt('w1.csv', _weights1, delimiter=',')
+    np.savetxt('b1.csv', _bias1, delimiter=',')
+    np.savetxt('w2.csv', _weights2, delimiter=',')
+    np.savetxt('b2.csv', _bias2, delimiter=',')
 
-def Using_Saved():
+def Using_saved():
     #Do something here to assign the saved weights from the file
-    sf = open("Save_state.csv","r")
-    _weights1 = sf.readline()
-    _bias1 = sf.readline()
-    _weights2 = sf.readline()
-    _bias2 = sf.readline()
-    sf.close()
+    _weights1 = np.loadtxt('w1.csv', delimiter=',')
+    _bias1 = np.loadtxt('b1.csv', delimiter=',')
+    _weights2 = np.loadtxt('w2.csv', delimiter=',')
+    _bias2 = np.loadtxt('b2.csv', delimiter=',')
     #also do something to take in inputs
-    inf = open("i_data.csv","r")
-    _inputes = inf.readline()
-    inf.close()
-
-    neuron1 = neuron(_weights1[0],_inputs[cycles],_bias1[0])
-    neuron2 = neuron(_weights1[1],_inputs[cycles],_bias1[1])
-    neuron3 = neuron(_weights1[2],_inputs[cycles],_bias1[2])
-    neuron4 = neuron(_weights1[3],_inputs[cycles],_bias1[3])
+    _inputs = np.loadtxt('i_data.csv', delimiter=',')
+    #Process the output guess
+    neuron1 = neuron(_weights1[0],_inputs,_bias1[0])
+    neuron2 = neuron(_weights1[1],_inputs,_bias1[1])
+    neuron3 = neuron(_weights1[2],_inputs,_bias1[2])
+    neuron4 = neuron(_weights1[3],_inputs,_bias1[3])
     _hiddenLayer1 = np.array([neuron1.calcSelf(),neuron2.calcSelf(),neuron3.calcSelf(),neuron4.calcSelf()])
     _output = SigmoidFreud(np.sum(np.multiply(_weights2,_hiddenLayer1))+_bias2) #calculation of the output neuron and normalising to produce a number between 0 and 1
-    if _output >= 5:
-        print("It will rain in the afternoon :(\nWell I'm at least "+str(_output*100)+"%% sure...")
+    if _output >= 0.5:
+        print("\n\nIt will rain in the afternoon :(\nWell I'm at least "+str(_output*100)+"% sure...\n\n")
         quit()
     else:
-        print("It won't rain :)\nWell I'm at least "+str(100-_output*100)+"%% sure...")
+        print("\n\nIt won't rain :)\nWell I'm at least "+str(100-_output*100)+"% sure...\n\n")
         quit()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +181,10 @@ def main():
         train()
         Save_state()
     if choice == "2":
-        pass
+        Using_saved()
+    else:
+        print("Not a valid input")
+        quit()
 
 if __name__ == "__main__":
     main()
