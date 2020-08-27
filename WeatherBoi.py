@@ -107,24 +107,24 @@ def train():
         _bias2Change.append(_b2change)
 
 #2> Applying the changes to weights and biases
-    if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
-        #first set of weights
-        for x in range(20):
-            _weights1Changes[x] = np.average(_weights1Changes[x])
-        _weights1 = _weights1+_weights1Changes
-        _weights1Changes = np.array([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
-        #first set of biases
-        for x in range(4):
-            _bias1Change[x] = np.average(_bias1Change[x])
-        _bias1 = _bias1+_bias1Change
-        _bias1Change = np.array([[],[],[],[]])
-        #second set of weights
-        for x in range(4):
-            _weights2Changes[x] = np.array(_weights2Changes[x])
-        _weights2 = _weights2+_weights2Changes
-        _weights2Changes = np.array([[],[],[],[]])
-        #second bias
-        _bias1 = _bias1+np.average(_bias2Change)
+        if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
+            #first set of weights
+            for x in range(20):
+                _weights1Changes[x] = np.average(_weights1Changes[x])
+            _weights1 = _weights1+_weights1Changes
+            _weights1Changes = np.array([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
+            #first set of biases
+            for x in range(4):
+                _bias1Change[x] = np.average(_bias1Change[x])
+            _bias1 = _bias1+_bias1Change
+            _bias1Change = np.array([[],[],[],[]])
+            #second set of weights
+            for x in range(4):
+                _weights2Changes[x] = np.array(_weights2Changes[x])
+            _weights2 = _weights2+_weights2Changes
+            _weights2Changes = np.array([[],[],[],[]])
+            #second bias
+            _bias1 = _bias1+np.average(_bias2Change)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #DATA COLLECTION AND FILE MANIPULATION
@@ -140,7 +140,6 @@ def Input_collect():
             _inputs.append(_tempStore)
             _correctAnswer.append(row[5])
             _tempStore = []
-
 
 #saving the state of the trained neural net weights and biases
 def Save_state():
