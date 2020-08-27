@@ -4,11 +4,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import numpy as np
+from csv import writer
 
 driver = webdriver.Chrome()
+print("\n\n\n\n\nDATA thus far collected:\n\n")
 
 #iterate each year
 for year in range(1997,2020):
+    print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nYear: {year}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     #iterate each month
     for month in range(12):
         #iterate each day (Note: some of the days are excluded using this method as some months have more than others, thus I only have 28 days from each month)
@@ -40,7 +43,7 @@ for year in range(1997,2020):
                             AVG_pressure = np.append(AVG_pressure, newTable[0].fillna('')['Pressure'][row].rstrip(" in"))
                         #See if it rained in the afternoon
                         else:
-                            if newTable[0].fillna('')['Precip.'][row] != '0.0 in':
+                            if 'Shower' in newTable[0].fillna('')['Condition'][row]:
                                 rained = 1
                     #calculating the mean of the data and storing the data into a file in the appropriate order for the A.I. to Process
                     AVG_temperature = np.sum(AVG_temperature.astype(np.float))/len(AVG_temperature)
@@ -48,6 +51,8 @@ for year in range(1997,2020):
                     AVG_windspeed = np.sum(AVG_windspeed.astype(np.float))/len(AVG_windspeed)
                     AVG_humidity = np.sum(AVG_humidity.astype(np.float))/len(AVG_humidity)
                     AVG_pressure = np.sum(AVG_pressure.astype(np.float))/len(AVG_pressure)
-                    with open("training_data.csv","w+") as csvfile:
-                        csvfile.write(f'{AVG_temperature},{AVG_dewpoint},{AVG_windspeed},{AVG_humidity},{AVG_pressure},{rained}')
+                    with open("training_data.csv", "a+", newline='') as csvfile:
+                        csvwriter = writer(csvfile)
+                        csvwriter.writerow([AVG_temperature,AVG_dewpoint,AVG_windspeed,AVG_humidity,AVG_pressure,rained])
+                        print([AVG_temperature,AVG_dewpoint,AVG_windspeed,AVG_humidity,AVG_pressure,rained])
 driver.quit()
