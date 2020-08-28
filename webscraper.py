@@ -10,7 +10,7 @@ driver = webdriver.Chrome()
 print("\n\n\n\n\nDATA thus far collected:\n\n")
 
 #iterate each year
-for year in range(1997,2020):
+for year in range(2014,2020):
     print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nYear: {year}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     #iterate each month
     for month in range(12):
@@ -22,7 +22,7 @@ for year in range(1997,2020):
             AVG_humidity = np.array([])
             AVG_pressure = np.array([])
             rained = 0
-            url = f'https://www.wunderground.com/history/daily/YSSY/date/{year}-{month+1}-{day+1}'
+            url = f'https://www.wunderground.com/history/daily/au/sydney/YSSY/date/{year}-{month+1}-{day+1}'
             driver.get(url)
             tables = WebDriverWait(driver,20).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "mat-table.cdk-table.mat-sort.ng-star-inserted")))
             for table in tables:
