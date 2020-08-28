@@ -12,6 +12,7 @@ print("\n\n\n\n\nDATA thus far collected:\n\n")
 #iterate each year
 for year in range(2014,2020):
     print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nYear: {year}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Key: [Temperature, Dew Point, Wind Speed, Humidity, Pressure, Rained(1 for yes, 0 for no)]")
     #iterate each month
     for month in range(12):
         #iterate each day (Note: some of the days are excluded using this method as some months have more than others, thus I only have 28 days from each month)
