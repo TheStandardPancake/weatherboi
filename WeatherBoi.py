@@ -20,13 +20,13 @@ def SigmoidFreud(x):
 np.random.seed(69)
 #inputs
 _correctAnswer = np.array([])
-_inputs = np.array([])
+_inputs = []
 #Connections to hidden layer
 _weights1 = np.random.rand(4,5)
 _weights1Changes = np.array([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
 _bias1 = np.random.rand(4)
 _bias1Change = np.array([[],[],[],[]])
-_hiddenLayer1 = []
+_hiddenLayer1 = np.array([])
 #Connections to output layer
 _weights2 = np.random.rand(4)
 _weights2Changes = np.array([[],[],[],[]])
@@ -61,6 +61,13 @@ def train():
     global neuron
     global _learningRate
     global _correctAnswer
+    global _bias1Change
+    global _bias2Change
+    global _weights1Changes
+    global _weights2Changes
+    global _inputs
+    _inputs = np.array(_inputs)
+    _inputs = _inputs.astype(np.float)
     print(_inputs)
     for cycles in range(_trainingCycles):
         print(f"Cycle: {cycles}")
@@ -70,48 +77,49 @@ def train():
         neuron4 = neuron(_weights1[3],_inputs[cycles],_bias1[3])
         _hiddenLayer1 = np.array([neuron1.calcSelf(),neuron2.calcSelf(),neuron3.calcSelf(),neuron4.calcSelf()])
         _output = SigmoidFreud(np.sum(np.multiply(_weights2,_hiddenLayer1))+_bias2) #calculation of the output neuron and normalising to produce a number between 0 and 1
-        print(f"output: {_output[0]}")
+        _output = _output[0]
+        print(f"output: {_output}")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #BACKPROPIGATION OF THE AI --- NOTE This is still inside the train() function
 
 #1> Calculating the required weight and bias changes
-        _memoization = -_learningRate*(_output[0]*(1-_output[0]))*2(_output[0]-_correctAnswer[cycles]) #reduces the number of times the computer calculates this value
+        _memoization = -_learningRate*(_output*(1-_output))*2*(_output-_correctAnswer[cycles]) #reduces the number of times the computer calculates this value
         for neuron in range(4):
             _w2Change = 0
             _b1Change = 0
             if neuron == 0:
                 _w2Change = neuron1.value*_memoization
-                _b1Change = -_learningRate*(neuron1.value*(1-neuron1.value))*2(_output[0]-_correctAnswer[cycles])
-                _bias1Change[0].append(_b1Change) #placing these values into a list to average them and make a change later
+                _b1Change = -_learningRate*(neuron1.value*(1-neuron1.value))*2*(_output-_correctAnswer[cycles])
+                np.append(_bias1Change[0], _b1Change) #placing these values into a list to average them and make a change later
                 for w in range(5):
-                    _w1Change = neuron1.inputs[w]*_memoization
-                    _weights1Changes[w].append(_w1Change) #placing these values into a list to average them and make a change later
+                    _w1Change = neuron1.inputs[0][w]*_memoization
+                    np.append(_weights1Changes[w], _w1Change) #placing these values into a list to average them and make a change later
             if neuron == 1:
                 _w2Change = neuron2.value*_memoization
-                _b1Change = -_learningRate*(neuron2.value*(1-neuron2.value))*2(_output[0]-_correctAnswer[cycles])
-                _bias1Change[1].append(_b1Change)
+                _b1Change = -_learningRate*(neuron2.value*(1-neuron2.value))*2*(_output-_correctAnswer[cycles])
+                np.append(_bias1Change[1], _b1Change)
                 for w in range(5):
-                    _w1Change = neuron2.inputs[w]*_memoization
-                    _weights1Changes[w+5].append(_w1Change)
+                    _w1Change = neuron2.inputs[0][w]*_memoization
+                    np.append(_weights1Changes[w+5], _w1Change)
             if neuron == 2:
                 _w2Change = neuron3.value*_memoization
-                _b1Change = -_learningRate*(neuron3.value*(1-neuron3.value))*2(_output[0]-_correctAnswer[cycles])
-                _bias1Change[2].append(_b1Change)
+                _b1Change = -_learningRate*(neuron3.value*(1-neuron3.value))*2*(_output-_correctAnswer[cycles])
+                np.append(_bias1Change[2], _b1Change)
                 for w in range(5):
-                    _w1Change = neuron3.inputs[w]*_memoization
-                    _weights1Changes[w+10].append(_w1Change)
+                    _w1Change = neuron3.inputs[0][w]*_memoization
+                    np.append(_weights1Changes[w+10], _w1Change)
             if neuron == 3:
                 _w2Change = neuron4.value*_memoization
-                _b1Change = -_learningRate*(neuron4.value*(1-neuron4.value))*2(_output[0]-_correctAnswer[cycles])
-                _bias1Change[3].append(_b1Change)
+                _b1Change = -_learningRate*(neuron4.value*(1-neuron4.value))*2*(_output-_correctAnswer[cycles])
+                np.append(_bias1Change[3], _b1Change)
                 for w in range(5):
-                    _w1Change = neuron3.inputs[w]*_memoization
-                    _weights1Changes[w+10].append(_w1Change)
-            _weights2Change[neuron].append(_w2Change) #placing these values into a list to average them and make a change later
+                    _w1Change = neuron3.inputs[0][w]*_memoization
+                    np.append(_weights1Changes[w+10], _w1Change)
+            np.append(_weights2Changes[neuron], _w2Change) #placing these values into a list to average them and make a change later
         #calculate the change in bias for the output node
         _b2change = _memoization #unnecessary, but makes the code easier to understand
-        _bias2Change.append(_b2change)
+        np.append(_bias2Change, _b2change)
 
 #2> Applying the changes to weights and biases
         if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
@@ -146,9 +154,8 @@ def Input_collect():
         for row in reader:
             for n in range(5):
                 _tempStore.append(row[n])
-            _inputs = np.append(_inputs, _tempStore)
-            _inputs = _inputs.astype(np.float)
-            _correctAnswer = np.append(_correctAnswer, row[5])
+            _inputs.append([_tempStore])
+            _correctAnswer = np.append(_correctAnswer, int(row[5]))
             _correctAnswer = _correctAnswer.astype(np.float)
             _tempStore = []
 
@@ -174,11 +181,11 @@ def Using_saved():
     neuron4 = neuron(_weights1[3],_inputs,_bias1[3])
     _hiddenLayer1 = np.array([neuron1.calcSelf(),neuron2.calcSelf(),neuron3.calcSelf(),neuron4.calcSelf()])
     _output = SigmoidFreud(np.sum(np.multiply(_weights2,_hiddenLayer1))+_bias2) #calculation of the output neuron and normalising to produce a number between 0 and 1
-    if _output[0] >= 0.5:
-        print("\n\nIt will rain in the afternoon :(\nWell I'm at least "+str(_output[0]*100)+"% sure...\n\n")
+    if _output >= 0.5:
+        print("\n\nIt will rain in the afternoon :(\nWell I'm at least "+str(_output*100)+"% sure...\n\n")
         quit()
     else:
-        print("\n\nIt won't rain :)\nWell I'm at least "+str(100-_output[0]*100)+"% sure...\n\n")
+        print("\n\nIt won't rain :)\nWell I'm at least "+str(100-_output*100)+"% sure...\n\n")
         quit()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
