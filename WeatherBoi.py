@@ -85,38 +85,38 @@ def train():
 
 #1> Calculating the required weight and bias changes
         _memoization = -_learningRate*(_output*(1-_output))*2*(_output-_correctAnswer[cycles]) #reduces the number of times the computer calculates this value
-        for neuron in range(4):
+        for neuronNum in range(4):
             _w2Change = 0
             _b1Change = 0
-            if neuron == 0:
+            if neuronNum == 0:
                 _w2Change = neuron1.value*_memoization
                 _b1Change = -_learningRate*(neuron1.value*(1-neuron1.value))*2*(_output-_correctAnswer[cycles])
                 _bias1Change[0].append(_b1Change) #placing these values into a list to average them and make a change later
                 for w in range(5):
                     _w1Change = neuron1.inputs[0][w]*_memoization
-                    _weights1Changes[w].append(_w1Change) #placing these values into a list to average them and make a change later
-            if neuron == 1:
+                    _weights1Changes[neuronNum][w].append(_w1Change) #placing these values into a list to average them and make a change later
+            if neuronNum == 1:
                 _w2Change = neuron2.value*_memoization
                 _b1Change = -_learningRate*(neuron2.value*(1-neuron2.value))*2*(_output-_correctAnswer[cycles])
                 _bias1Change[1].append(_b1Change)
                 for w in range(5):
                     _w1Change = neuron2.inputs[0][w]*_memoization
-                    _weights1Changes[w+5].append(_w1Change)
-            if neuron == 2:
+                    _weights1Changes[neuronNum][w].append(_w1Change)
+            if neuronNum == 2:
                 _w2Change = neuron3.value*_memoization
                 _b1Change = -_learningRate*(neuron3.value*(1-neuron3.value))*2*(_output-_correctAnswer[cycles])
                 _bias1Change[2].append(_b1Change)
                 for w in range(5):
                     _w1Change = neuron3.inputs[0][w]*_memoization
-                    _weights1Changes[w+10].append(_w1Change)
-            if neuron == 3:
+                    _weights1Changes[neuronNum][w].append(_w1Change)
+            if neuronNum == 3:
                 _w2Change = neuron4.value*_memoization
                 _b1Change = -_learningRate*(neuron4.value*(1-neuron4.value))*2*(_output-_correctAnswer[cycles])
                 _bias1Change[3].append(_b1Change)
                 for w in range(5):
                     _w1Change = neuron3.inputs[0][w]*_memoization
-                    _weights1Changes[w+10].append(_w1Change)
-            _weights2Changes[neuron].append(_w2Change) #placing these values into a list to average them and make a change later
+                    _weights1Changes[neuronNum][w].append(_w1Change)
+            _weights2Changes[neuronNum].append(_w2Change) #placing these values into a list to average them and make a change later
         #calculate the change in bias for the output node
         _b2change = _memoization #unnecessary, but makes the code easier to understand
         _bias2Change = np.append(_bias2Change, _b2change)
@@ -124,21 +124,19 @@ def train():
 #2> Applying the changes to weights and biases
         if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
             _bias1Change = np.array(_bias1Change) #doing this now before calulations because np arrays append weird - it was a regular list up to this point
-            print(_weights1Changes)
             _weights1Changes = np.array(_weights1Changes)
-
-            print(_weights1)
+            _weights1Changes = np.squeeze(_weights1Changes)
             _weights2Changes = np.array(_weights2Changes)
             #first set of weights
-            for x in range(20):
-                _weights1Changes[x] = np.average(_weights1Changes[x])
+            for x in range(4):
+                for y in range(5):
+                    _weights1Changes[x][y] = np.average(_weights1Changes[x][y])
             _weights1 = _weights1+_weights1Changes
             _weights1Changes = [[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]]]
             #first set of biases
             for x in range(4):
                 _bias1Change[x] = np.average(_bias1Change[x])
             _bias1 = _bias1+_bias1Change
-            print(_bias1)
             _bias1Change = [[],[],[],[]]
             #second set of weights
             for x in range(4):
