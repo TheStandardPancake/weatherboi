@@ -34,7 +34,7 @@ _bias2 = np.random.rand(1)
 _bias2Change = np.array([])
 
 #defining the number of cycles the neural net will train for, as well as the learning rate
-_trainingCycles = 10
+_trainingCycles = 100
 _learningRate = 1
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,9 +124,11 @@ def train():
 #2> Applying the changes to weights and biases
         if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
             _bias1Change = np.array(_bias1Change) #doing this now before calulations because np arrays append weird - it was a regular list up to this point
+            _bias1Change = np.resize(_bias1Change,(4,1))
             _weights1Changes = np.array(_weights1Changes)
-            _weights1Changes = np.squeeze(_weights1Changes)
+            _weights1Changes = np.resize(_weights1Changes,(4,5))
             _weights2Changes = np.array(_weights2Changes)
+            _weights2Changes = np.resize(_weights2Changes,(4,1))
             #first set of weights
             for x in range(4):
                 for y in range(5):
