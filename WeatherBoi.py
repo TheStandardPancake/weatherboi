@@ -11,6 +11,8 @@ import csv
 
 #the normalising sigmoid function
 def SigmoidFreud(x):
+    print("sig")
+    print(1/(1+np.exp(x)))
     return 1/(1+np.exp(-x))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,10 +70,11 @@ def train():
     global _inputs
     _inputs = np.array(_inputs)
     _inputs = _inputs.astype(np.float)
-    print(_inputs)
     for cycles in range(_trainingCycles):
         print(f"Cycle: {cycles}")
         neuron1 = neuron(_weights1[0],_inputs[cycles],_bias1[0])
+        print("bias")
+        print(_bias1)
         neuron2 = neuron(_weights1[1],_inputs[cycles],_bias1[1])
         neuron3 = neuron(_weights1[2],_inputs[cycles],_bias1[2])
         neuron4 = neuron(_weights1[3],_inputs[cycles],_bias1[3])
@@ -122,7 +125,7 @@ def train():
         _bias2Change = np.append(_bias2Change, _b2change)
 
 #2> Applying the changes to weights and biases
-        if cycles%10 == 0: #takes average of weight/bias changes for every 10 cycles
+        if cycles%10 == 0 and cycles!=0: #takes average of weight/bias changes for every 10 cycles
             _bias1Change = np.array(_bias1Change) #doing this now before calulations because np arrays append weird - it was a regular list up to this point
             _bias1Change = np.resize(_bias1Change,(4,1))
             _weights1Changes = np.array(_weights1Changes)
@@ -138,7 +141,8 @@ def train():
             #first set of biases
             for x in range(4):
                 _bias1Change[x] = np.average(_bias1Change[x])
-            _bias1 = _bias1+_bias1Change
+            tempBC = [_bias1Change[0][0],_bias1Change[1][0],_bias1Change[2][0],_bias1Change[3][0]] #I have to do this to get a list of numbers rather than a list of lists that contain single numbers
+            _bias1 = _bias1+tempBC
             _bias1Change = [[],[],[],[]]
             #second set of weights
             for x in range(4):
