@@ -53,7 +53,7 @@ class neuron():
         self.value = 0
 
     def calcSelf(self): #calculate the neuron's value between 1 and 0
-        self.value = np.sum(np.multiply(self.weights,SigmoidFreud(self.inputs)))+self.bias
+        self.value = SigmoidFreud((np.sum(np.multiply(self.weights,self.inputs))+self.bias))
         return self.value
 
 #training the neurons:
@@ -74,6 +74,7 @@ def train():
     _inputs = _inputs.astype(np.float)
     for cycles in range(_trainingCycles):
         print(f"Cycle: {cycles}")
+        print(f"Answer: {_correctAnswer[cycles]}")
         neuron1 = neuron(_weights1[0],_inputs[cycles],_bias1[0])
         print("bias")
         print(_bias1)
@@ -139,13 +140,16 @@ def train():
             _bias1Change = np.array(_bias1Change) #doing this now before calulations because np arrays append weird - it was a regular list up to this point
             _bias1Change = np.resize(_bias1Change,(4,1))
             _weights1Changes = np.array(_weights1Changes)
-            _weights1Changes = np.resize(_weights1Changes,(4,5))
+            _weights1Changes = np.resize(_weights1Changes,(4,5,10))
             _weights2Changes = np.array(_weights2Changes)
             _weights2Changes = np.resize(_weights2Changes,(4,1))
             #first set of weights
+            _weights1Annoying = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
             for x in range(4):
                 for y in range(5):
-                    _weights1Changes[x][y] = np.average(_weights1Changes[x][y])
+                    _weights1Annoying[x][y] = np.average(_weights1Changes[x][y])
+            _weights1Changes = np.array(_weights1Annoying)
+            print(_weights1Changes)
             _weights1 = _weights1+_weights1Changes
             _weights1Changes = [[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]]]
             #first set of biases
