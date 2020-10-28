@@ -76,7 +76,6 @@ def train():
         print(f"Cycle: {cycles}")
         print(f"Answer: {_correctAnswer[cycles]}")
         neuron1 = neuron(_weights1[0],_inputs[cycles],_bias1[0])
-        print("bias")
         print(_bias1)
         neuron2 = neuron(_weights1[1],_inputs[cycles],_bias1[1])
         neuron3 = neuron(_weights1[2],_inputs[cycles],_bias1[2])
@@ -136,7 +135,7 @@ def train():
         _bias2Change = np.append(_bias2Change, _b2change)
 
 #2> Applying the changes to weights and biases
-        if cycles%10 == 0 and cycles!=0: #takes average of weight/bias changes for every 10 cycles
+        if cycles%1 == 0 and cycles!=0: #takes average of weight/bias changes for every 10 cycles
             _bias1Change = np.array(_bias1Change) #doing this now before calulations because np arrays append weird - it was a regular list up to this point
             _bias1Change = np.resize(_bias1Change,(4,1))
             _weights1Changes = np.array(_weights1Changes)
@@ -149,7 +148,6 @@ def train():
                 for y in range(5):
                     _weights1Annoying[x][y] = np.average(_weights1Changes[x][y])
             _weights1Changes = np.array(_weights1Annoying)
-            print(_weights1Changes)
             _weights1 = _weights1+_weights1Changes
             _weights1Changes = [[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]]]
             #first set of biases
@@ -223,6 +221,7 @@ def main():
         train()
         Save_state()
         print(f"{corr}:{inc}")
+        print(f"\n\nGuesses are correct {(corr/_trainingCycles)*100}% of the time")
     if choice == "2":
         Using_saved()
     else:
